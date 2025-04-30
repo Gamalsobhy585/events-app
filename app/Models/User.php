@@ -20,7 +20,10 @@ class User extends Model
         'email',
     ];
 
-
+    protected $dispatchesEvents = [
+        'saved' => UserSaved::class,
+    ];
+    
     protected static function booted()
     {
         static::saved(function ($user) {

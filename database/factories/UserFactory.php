@@ -3,42 +3,44 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $prefix = $this->faker->randomElement(['Mr', 'Mrs', 'Ms', 'Miss', 'Dr', null]);
+        
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'firstname' => $this->faker->firstName(),
+            'middlename' => $this->faker->boolean(70) ? $this->faker->firstName() : null,
+            'lastname' => $this->faker->lastName(),
+            'prefixname' => $prefix,
+            'photo' => $this->faker->boolean(80) ? 'avatars/'.$this->faker->image(storage_path('app/public/avatars'), 100, 100, 'people', false) : null,
+            'email' => $this->faker->unique()->safeEmail(),
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public function male(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+        return $this->state([
+            'prefixname' => $this->faker->randomElement(['Mr', 'Sir', 'Dr']),
+        ]);
+    }
+
+    public function female(): static
+    {
+        return $this->state([
+            'prefixname' => $this->faker->randomElement(['Mrs', 'Ms', 'Miss', 'Madam']),
+        ]);
+    }
+
+    public function withPhoto(): static
+    {
+        return $this->state([
+            'photo' => 'avatars/'.$this->faker->image(storage_path('app/public/avatars'), 100, 100, 'people', false),
         ]);
     }
 }

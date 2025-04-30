@@ -2,28 +2,41 @@
 
 namespace App\Listeners;
 
+use App\Models\Detail;
 use App\Events\UserSaved;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\Interface\UserServiceInterface;
-use Illuminate\Queue\InteractsWithQueue;
 use Exception;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 class SaveUserBackgroundInformation implements ShouldQueue
 {
     use InteractsWithQueue;
+
+    
     public $tries = 3;
+
+  
     public $backoff = 60;
+
+   
     protected $userService;
-    public function __construct(UserServiceInterface $userService)
+
+    protected $detail;
+
+    
+    public function __construct(UserServiceInterface $userService, Detail $detail)
     {
         $this->userService = $userService;
+        $this->detail = $detail;
     }
 
+ 
     public function handle(UserSaved $event)
     {
         try {
-            $this->userService->saveUserBackgroundInformation($event->user);
+            $this->userService->saveUserBackgroundInformation($event->user, $this->detail);
             Log::info('User background information saved successfully', ['user_id' => $event->user->id]);
         } catch (Exception $e) {
             Log::error('Failed to save user background information', [
@@ -37,8 +50,11 @@ class SaveUserBackgroundInformation implements ShouldQueue
             } else {
                 $this->fail($e);
             }
+
+            throw $e;
         }
     }
+
 
     public function failed(Exception $exception)
     {
@@ -46,6 +62,5 @@ class SaveUserBackgroundInformation implements ShouldQueue
             'error' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString()
         ]);
-
     }
 }
