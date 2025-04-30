@@ -13,26 +13,15 @@ use Illuminate\Support\Facades\Log;
 class SaveUserBackgroundInformation implements ShouldQueue
 {
     use InteractsWithQueue;
-
-    
     public $tries = 3;
-
-  
     public $backoff = 60;
-
-   
     protected $userService;
-
     protected $detail;
-
-    
     public function __construct(UserServiceInterface $userService, Detail $detail)
     {
         $this->userService = $userService;
         $this->detail = $detail;
     }
-
- 
     public function handle(UserSaved $event)
     {
         try {
@@ -54,7 +43,6 @@ class SaveUserBackgroundInformation implements ShouldQueue
             throw $e;
         }
     }
-
 
     public function failed(Exception $exception)
     {
