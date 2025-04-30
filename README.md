@@ -125,6 +125,3 @@ tests/
 - **Interface Segregation**: Used focused interfaces
 - **Dependency Inversion**: High-level modules depend on abstractions
 
-## Repository
-
-The project is available at: [https://github.com/Gamalsobhy585/events-app.git](https://github.com/Gamalsobhy585/events-app.git)
