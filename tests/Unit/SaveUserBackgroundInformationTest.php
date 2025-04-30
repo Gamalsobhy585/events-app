@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature; // Adjust namespace as needed
+namespace Tests\Feature; 
 
 use App\Events\UserSaved;
 use App\Listeners\SaveUserBackgroundInformation;
@@ -8,14 +8,15 @@ use App\Models\Detail;
 use App\Models\User;
 use App\Services\Interface\UserServiceInterface;
 use Exception;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Mockery;
 use Tests\TestCase;
 
 class SaveUserBackgroundInformationTest extends TestCase
 {
-    use RefreshDatabase;
+    // uncomment the following line if you want to keep the databsase refreshed after the test 
+    // use RefreshDatabase;
     private $userService;
     private $detail;
     private $listener;

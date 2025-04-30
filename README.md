@@ -1,61 +1,130 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+# EEC Assessment Project
 
+This application was developed as a technical assessment for EEC Company. It demonstrates advanced Laravel features with a strong focus on events, listeners, and comprehensive testing methodologies.
 
-## About Laravel
+## Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The project implements a user management system with automatic background information processing using Laravel's event-driven architecture. Key features include:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Event-driven architecture with `UserSaved` event and corresponding listeners
+- Background processing using Laravel queues for enhanced performance
+- Comprehensive unit and feature testing
+- Implementation of SOLID principles and modular design
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Technical Implementation
 
-## Learning Laravel
+- **Events & Listeners**: Implemented the `UserSaved` event triggered on user creation/update, with a corresponding listener that processes user background information
+- **Queue System**: Utilized Laravel's queue system to process user information in the background
+- **Relationships**: Established a one-to-many relationship between User and Detail models
+- **Service Layer**: Created dedicated service classes for business logic to maintain separation of concerns
+- **Testing**: Implemented comprehensive unit and feature tests with mocking
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Setup Instructions
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. Clone the repository:
+   ```
+   git clone https://github.com/Gamalsobhy585/events-app.git
+   cd events-app
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. Install dependencies:
+   ```
+   composer install
+   npm install && npm run dev
+   ```
 
-## Laravel Sponsors
+3. Environment setup:
+   - Copy `.env.example` to `.env`
+   - Configure your database settings
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. Create a MySQL database named `eec_app`
 
-### Premium Partners
+5. Run migrations:
+   ```
+   php artisan migrate
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+6. Start the application:
+   ```
+   php artisan serve
+   ```
 
-## Contributing
+7. Run the queue worker (in a separate terminal):
+   ```
+   php artisan queue:work
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Testing
 
-## Code of Conduct
+Run the test suite with:
+```
+php artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Important Note**: If you want to keep the database refreshed after tests, uncomment the following line in the test files:
+```php
+// use RefreshDatabase;
+```
 
-## Security Vulnerabilities
+## Features Implemented
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 1. Database Structure
+- Created `details` table to store additional user background information
+- Implemented foreign key constraints with proper cascading on DELETE and UPDATE
 
-## License
+### 2. Models & Relationships
+- Created `Detail` model with appropriate relationships
+- Established one-to-many relationship between `User` and `Detail` models
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 3. Events
+- Implemented `UserSaved` event triggered when a user is created or updated
+- Mapped event to the `saved` event on the `User` model
+
+### 4. Listeners
+- Implemented `SaveUserBackgroundInformation` listener to process user data
+- The listener generates and stores:
+  - User's full name (combining first, middle, and last name)
+  - Middle initial
+  - Avatar data
+  - Gender information based on prefix
+
+### 5. Service Layer
+- Created `UserService` to handle the business logic
+- Service is injected into the listener following dependency injection principles
+
+## Project Structure
+
+```
+app/
+├── Events/
+│   └── UserSaved.php
+├── Listeners/
+│   └── SaveUserBackgroundInformation.php
+├── Models/
+│   ├── User.php
+│   └── Detail.php
+├── Services/
+│   ├── Interface/
+│   │   └── UserServiceInterface.php
+│   └── UserService.php
+│
+tests/
+├── Feature/
+│   └── SaveUserBackgroundInformationTest.php
+└── Unit/
+    └── UserSavedEventTest.php
+```
+
+## SOLID Principles Applied
+
+- **Single Responsibility**: Each class has one responsibility
+- **Open/Closed**: Classes are open for extension but closed for modification
+- **Liskov Substitution**: Interface implementations can be substituted
+- **Interface Segregation**: Used focused interfaces
+- **Dependency Inversion**: High-level modules depend on abstractions
+
+## Repository
+
+The project is available at: [https://github.com/Gamalsobhy585/events-app.git](https://github.com/Gamalsobhy585/events-app.git)

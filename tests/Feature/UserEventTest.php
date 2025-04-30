@@ -7,14 +7,15 @@ use App\Models\User;
 use App\Listeners\SaveUserBackgroundInformation;
 use App\Models\Detail;
 use App\Services\Interface\UserServiceInterface;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserEventTest extends TestCase
 {
-    use RefreshDatabase;
+    // uncomment the following line if you want to keep the databsase refreshed after the test 
+    // use RefreshDatabase;
 
     private User $testUser;
     private SaveUserBackgroundInformation $listener;
