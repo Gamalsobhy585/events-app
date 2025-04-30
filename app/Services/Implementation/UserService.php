@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Implementation;
-use App\Models\User;
 use App\Services\Interface\UserServiceInterface;
+use Illuminate\Support\Facades\Cache;
 
 class UserService implements UserServiceInterface
 {
@@ -61,13 +61,19 @@ class UserService implements UserServiceInterface
 
     public function getUserDetails($user)
     {
-        return $user->details()->paginate(10);
+        $cacheKey = "user_details_{$user->id}";
+    
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($user) {
+            return $user->details()->paginate(10);
+        });
     }
-
     public function createUserDetail($user, array $data)
     {
-        return $user->details()->create($data);
+        $detail = $user->details()->create($data);
+        Cache::forget("user_details_{$user->id}");
+        return $detail;
     }
+    
 
     public function getUserDetail($user, $detailId)
     {
@@ -77,11 +83,17 @@ class UserService implements UserServiceInterface
     public function updateUserDetail($detail, array $data)
     {
         $detail->update($data);
+        Cache::forget("user_details_{$detail->user_id}");
         return $detail;
     }
+    
 
     public function deleteUserDetail($detail)
     {
-        return $detail->delete();
+        $userId = $detail->user_id;
+        $detail->delete();
+        Cache::forget("user_details_{$userId}");
+        return true;
     }
+    
 }
