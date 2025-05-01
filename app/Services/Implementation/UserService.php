@@ -88,12 +88,6 @@ class UserService implements UserServiceInterface
     }
     
 
-    public function deleteUserDetail($detail)
-    {
-        $userId = $detail->user_id;
-        $detail->delete();
-        Cache::forget("user_details_{$userId}");
-        return true;
-    }
+
     
 }

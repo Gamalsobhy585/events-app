@@ -35,7 +35,8 @@ class SaveUserBackgroundInformationTest extends TestCase
             'middlename' => 'Middle',
             'lastname' => 'Doe',
             'prefixname' => 'Mr',
-            'photo' => 'avatar.png'
+            'photo' => 'avatar.png',
+            'password' => bcrypt('testpass') 
         ]);
     }
     
@@ -79,7 +80,9 @@ class SaveUserBackgroundInformationTest extends TestCase
     {
         return User::factory()->create([
             'firstname' => 'Retry',
-            'lastname' => 'Failure'
+            'lastname' => 'Failure',
+            'password' => bcrypt('retrypass')
+
         ]);
     }
 

@@ -4,21 +4,29 @@ namespace App\Models;
 
 use App\Events\UserSaved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
 
     protected $fillable = [
         'firstname',
         'middlename',
         'lastname',
+        'email',
+        'password',
         'prefixname',
         'photo',
-        'email',
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
 
     protected $dispatchesEvents = [
         'saved' => UserSaved::class,
@@ -31,6 +39,14 @@ class User extends Model
         });
     }
 
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+    
 
     public function details()
     {

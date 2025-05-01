@@ -12,5 +12,4 @@ interface UserServiceInterface
     public function createUserDetail($user, array $data);
     public function getUserDetail($user, $detailId);
     public function updateUserDetail($detail, array $data);
-    public function deleteUserDetail($detail);
 }

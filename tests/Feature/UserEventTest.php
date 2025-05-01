@@ -19,27 +19,28 @@ class UserEventTest extends TestCase
 
     private User $testUser;
     private SaveUserBackgroundInformation $listener;
-
     protected function setUp(): void
     {
         parent::setUp();
-        
+    
         $this->app['config']->set('app.key', 'base64:'.base64_encode(
             \Illuminate\Encryption\Encrypter::generateKey($this->app['config']['app.cipher'])
         ));
-        
-        $this->testUser = new User([
+    
+        $this->testUser = User::factory()->create([
             'firstname' => 'Test',
             'middlename' => 'User',
             'lastname' => 'One',
-            'email' => 'test@example.com'
+            'email' => fake()->unique()->safeEmail(), 
+            'password' => bcrypt('securepassword'),
         ]);
-        
+    
         $this->listener = new SaveUserBackgroundInformation(
             app(UserServiceInterface::class),
             app(Detail::class)
         );
     }
+    
 
  
     public function test_user_saved_event_triggers_background_save(): void
@@ -49,7 +50,9 @@ class UserEventTest extends TestCase
         $user = User::create([
             'firstname' => 'Test',
             'lastname' => 'User',
-            'email' => 'test@example.com'
+            'email' => 'test@example.com',
+            'password' => bcrypt('securepassword')
+
         ]);
         
         Event::assertDispatched(UserSaved::class, function ($event) use ($user) {
@@ -90,7 +93,8 @@ class UserEventTest extends TestCase
         $user = User::create([
             'firstname' => 'Real',
             'lastname' => 'User', 
-            'email' => 'realuser@example.com'
+            'email' => 'realuser@example.com',
+            'password' => bcrypt('securepassword')
         ]);
         
         $this->assertDatabaseHas('users', ['email' => 'realuser@example.com']);
@@ -112,7 +116,8 @@ class UserEventTest extends TestCase
             'lastname' => 'Smith',
             'prefixname' => 'Mrs',
             'email' => 'jane@example.com',
-            'photo' => 'profile.jpg'
+            'photo' => 'profile.jpg',
+            'password' => bcrypt('securepassword'),
         ]);
     }
     
